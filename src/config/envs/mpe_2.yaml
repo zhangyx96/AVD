@@ -1,0 +1,14 @@
+env: MPE
+env_args:
+  env_id: 'simple_spread_6'
+  seed: 1000
+  discrete_action: True
+
+
+learner_log_interval: 50000
+log_interval: 50000
+runner_log_interval: 50000
+t_max: 500000
+test_interval: 50000
+test_nepisode: 100
+test_greedy: True
