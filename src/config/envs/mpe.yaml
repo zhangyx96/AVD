@@ -1,6 +1,6 @@
 env: MPE
 env_args:
-  env_id: 'simple_spread'
+  env_id: 'simple_spread' 
   seed: 1000
   discrete_action: True
 

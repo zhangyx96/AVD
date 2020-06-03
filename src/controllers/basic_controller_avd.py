@@ -12,7 +12,6 @@ class BasicMAC_AVD:
         self._build_agents(input_shape)
         #self._build_credit_layer(input_shape)  #build cr_layer , like agent
         self.attention_layer = agent_REGISTRY['attention_layer'](input_shape, self.args)
-        
         self.agent_output_type = args.agent_output_type
         self.action_selector = action_REGISTRY[args.action_selector](args)
         self.hidden_states = None
@@ -93,7 +92,7 @@ class BasicMAC_AVD:
         # Other MACs might want to e.g. delegate building inputs to each agent
         bs = batch.batch_size   # !! bs is parrallel run batch size, not buffer batch size
         inputs = []
-        inputs.append(batch["obs"][:, t])  # b1av
+        inputs.append(batch["obs"][:, t])  # b1av 
         if self.args.obs_last_action:
             if t == 0:
                 inputs.append(th.zeros_like(batch["actions_onehot"][:, t]))

@@ -11,19 +11,23 @@ class Attention_Layer(nn.Module):
         self.args = args
         self.embedding_dim = 64
         self.hidden_dim = 64
-        #sself.fc1 = nn.Linear(input_shape, self.embedding_dim)
+        self.fc1 = nn.Linear(input_shape, self.embedding_dim)
         self.fc = nn.Linear(self.embedding_dim * 2 ,1)  #self output + attention_output
         self.correlation_mat = nn.Parameter(torch.FloatTensor(self.embedding_dim,self.embedding_dim),requires_grad=True)
         nn.init.orthogonal_(self.correlation_mat.data, gain=1)
         self.layer_norm_1 = nn.LayerNorm(self.hidden_dim)
         self.layer_norm_2 = nn.LayerNorm(self.hidden_dim)
         self.g = nn.Linear(self.embedding_dim, self.hidden_dim)
-        self.obs_encoder = ObsEncoder(hidden_dim = self.hidden_dim,map_name = args.env_args['map_name'])
+        if args.use_attention:
+            self.obs_encoder = ObsEncoder(hidden_dim = self.hidden_dim,map_name = args.env_args['map_name'])
         self.last = nn.Sequential(nn.Linear(self.embedding_dim * 2 ,1), nn.Sigmoid())
 
     def forward(self, inputs):
         batch_size = self.args.batch_size
-        fi = self.obs_encoder(inputs).view(batch_size,self.args.n_agents,-1)  #(batch_size,n_agents,embedding_dim)
+        if self.args.use_attention:
+            fi = self.obs_encoder(inputs).view(batch_size,self.args.n_agents,-1)  #(batch_size,n_agents,embedding_dim)
+        else:
+            fi = F.relu(self.fc1(inputs)).view(batch_size,self.args.n_agents,-1)
         weight = []
         for i in range(self.args.n_agents):
             beta = []
